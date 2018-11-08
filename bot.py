@@ -10,7 +10,7 @@ import random
 from discord.ext import commands
 from PIL import Image, ImageDraw, ImageFont
 
-bot = commands.Bot(description='Gamming cord can do a lot more.....', command_prefix=commands.when_mentioned_or('gc!'))
+bot = commands.Bot(description='Gamming cord can do a lot more.....', command_prefix=commands.when_mentioned_or('s!'))
 
 
 class BAsics():
