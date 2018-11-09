@@ -7,7 +7,7 @@ import io
 import re
 import asyncio
 import random
-import request
+import requests
 import json 
 import psutil
 from discord.ext import commands
