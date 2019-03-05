@@ -7,6 +7,8 @@ import io
 import re
 import asyncio
 import random
+import requests
+import json 
 from discord.ext import commands
 from PIL import Image, ImageDraw, ImageFont
 
@@ -352,28 +354,40 @@ async def ban(ctx, member: discord.Member, *, reason):
             await member.ban()
     else:
         message = await ctx.send(f'''{ctx.author.mention} you are not eligible for this''', delete_after= 3)
-        await message.add_reaction('\u2623') 
+        await message.add_reaction('\u2623')
+        
+@bot.command()
+async def neko(ctx):
+    ''''sends cute nekos'''
+    r = requests.get("https://nekos.life/api/neko").json()
+
+    colours = [0x1abc9c, 0x11806a, 0x2ecc71, 0x1f8b4c, 0x3498db, 0x206694, 0x9b59b6, 0x71368a, 0xe91e63, 0xad1457, 0xf1c40f, 0xc27c0e, 0xa84300, 0xe74c3c, 0x992d22, 0x95a5a6, 0x607d8b, 0x979c9f, 0x546e7a]
+    col = int(random.random() * len(colours))
+    content = [":neko: Don't be sad! This neko wants to play with you!", "You seem lonely, {0.mention}. Here, have a neko. They're not as nice , but enjoy!".format(ctx.message.author), "Weuf, woof, woooooooooof. Woof you.", "Pupper!", "Meow... wait its neko."]
+    con = int(random.random() * len(content))
+    embed=discord.Embed()
+    embed.set_image(url=r["neko"])
+    await ctx.send(content=content[con],embed=embed)
+   
+@bot.command()
+async def dog(ctx):
+    ''''sends cute dog pics'''
+    r = requests.get("https://dog.ceo/api/breeds/image/random").json()
+    embed=discord.Embed()
+    embed.set_image(url=r["message"])
+    await ctx.send(embed=embed)
 
 
 
-@bot.command(pass_context=True)
-async def joined_at(ctx, member: discord.Member = None):
-    ":checks joined time of user"
-    if member is None:
-        member = ctx.message.author
-        em = discord.Embed(title='Join', colour=discord.Colour.dark_red(),
-                            description=f'''{member} has  Joinned''', timestamp=datetime.datetime.utcnow())
-        em.set_thumbnail(url=member.avatar_url)
-        em.add_field(name='Member', value=f'''{member} joined at {member.joined_at}''', inline=False)
-        await ctx.send(embed=em)
-    else:
-        if member is discord.Member:
-            member = ctx.message.author
-            em = discord.Embed(title='Join', colour=discord.Colour.dark_red(),
-                                description=f'''{member} has  Joinned''', timestamp=datetime.datetime.utcnow())
-            em.set_thumbnail(url=member.avatar_url)
-            em.add_field(name='Member', value=f'''{member} joined at {member.joined_at}''', inline=False)
-            await ctx.send(embed=em)
+
+
+@bot.command()
+async def joined(ctx, member: discord.Member):
+    joined = member.joined_at.strftime("%d %b %Y %H:%M")
+    created = member.created_at.strftime("%d %b %Y %H:%M")
+    msg = (f'Join date for {member.name}: {joined}\n'
+           f'Account created on: {created}')
+    await ctx.send(msg)
             
 @bot.command(pass_context = True)
 async def say(ctx, *args):
