@@ -10,7 +10,7 @@ import random
 from discord.ext import commands
 from PIL import Image, ImageDraw, ImageFont
 
-bot = commands.Bot(description='Gamming cord can do a lot more.....', command_prefix=commands.when_mentioned_or('gc!'))
+bot = commands.Bot(description='Gamming cord can do a lot more.....', command_prefix=commands.when_mentioned_or('s!'))
 
 
 class BAsics():
@@ -302,11 +302,258 @@ async def reload(ctx, extension):
             await ctx.send("```No such extention exists```")
     else:
         await ctx.send("```You can't do it buddy you better know it```")
+        
+@bot.command(pass_context=True, no_pm=True, name='kill')
+async def _kill(ctx, victim: discord.Member):
+    """Randomly chooses a kill."""
+    author = ctx.message.author
+    if victim.id == author.id:
+        await ctx.send('I won\'t let you kill yourself!')
+    elif victim.id == ctx.bot.user.id:
+        await ctx.send('I refuse to kill myself!')
+    else:
+        choices =["{killer} shoves a double barreled shotgun into {victim}\'s mouth and squeezes the trigger of the gun, causing {victim}\'s head to horrifically explode like a ripe pimple, splattering the young person\'s brain matter, gore, and bone fragments all over the walls and painting it a crimson red.",
+                  "Screaming in sheer terror and agony, {victim} is horrifically dragged into the darkness by unseen forces, leaving nothing but bloody fingernails and a trail of scratch marks in the ground from which the young person had attempted to halt the dragging process.",
+                  "{killer} takes a machette and starts hacking away on {victim}, chopping {victim} into dozens of pieces'.",
+                  "{killer} pours acid over {victim}. Well don\'t you look pretty right now?",
+                  "{victim} screams in terror as a giant creature with huge muscular arms grab {victim}\'s head; {victim}\'s screams of terror are cut off as the creature tears off the head with a sickening crunching sound. {victim}\'s spinal cord, which is still attached to the dismembered head, is used by the creature as a makeshift sword to slice a perfect asymmetrical line down {victim}\'s body, causing the organs to spill out as the two halves fall to their) respective sides.",
+                  "{killer} grabs {victim}\'s head and tears it off with superhuman speed and efficiency. Using {victim}\'s head as a makeshift basketball, {killer} expertly slams dunk it into the basketball hoop, much to the applause of the audience watching the gruesome scene.",
+                  "{killer} uses a shiv to horrifically stab {victim} multiple times in the chest and throat, causing {victim} to gurgle up blood as the young person horrifically dies.",
+                  "{victim} screams as {killer} lifts {victim} up using his superhuman strength. Before {victim} can even utter a scream of terror, {killer} uses his superhuman strength to horrifically tear {victim} into two halves; {victim} stares at the monstrosity in shock and disbelief as {victim} gurgles up blood, the upper body organs spilling out of the dismembered torso, before the eyes roll backward into the skull.",
+                  "{victim} steps on a land mine and is horrifically blown to multiple pieces as the device explodes, the {victim}\'s entrails and gore flying up and splattering all around as if someone had thrown a watermelon onto the ground from the top of a multiple story building.",
+                  "{victim} is killed instantly as the top half of his head is blown off by a Red Army sniper armed with a Mosin Nagant, {victim}\'s brains splattering everywhere in a horrific fashion."]
+        
+        message = str(random.choice(choices)).format(victim=victim.display_name, killer=author.display_name)
+        await ctx.send(message)
+
+@bot.command()
+async def ban(ctx, member: discord.Member, *, reason):
+    ":bans user by name or id if u have perms"
+    if ctx.author.permissions_in(ctx.channel).ban_members:
+        if reason is None:
+            await member.send(f'''You have been banned by {ctx.author.name} from {ctx.guild.name} due to __No reason given__ ''')
+            em = discord.Embed(title='Banned', colour=discord.Colour.dark_red(),
+                            description=f'''{member} has been banned''', timestamp= datetime.datetime.utcnow())
+            em.set_thumbnail(url=member.avatar_url)
+            em.add_field(name='Moderator', value=f'''{ctx.author.name}''', inline=False)
+            em.add_field(name='Culpret', value=f'''{member}''', inline=False)
+            em.add_field(name='Reason for Banning', value=f'''_No reason provided_''', inline=False)
+            await ctx.send(embed=em)
+            await member.ban()
+        else:
+            await member.send(f'''You have been Banned by {ctx.author.name} from {ctx.guild.name} due to {reason} ''')
+            em = discord.Embed(title='Banned', colour=discord.Colour.dark_red(),
+                                description=f'''{member} has been banned''', timestamp=datetime.datetime.utcnow())
+            em.set_thumbnail(url=member.avatar_url)
+            em.add_field(name='Moderator', value=f'''{ctx.author.name}''', inline=False)
+            em.add_field(name='Culprit', value=f'''{member}''', inline=False)
+            em.add_field(name='Reason for Banning', value=f'''{reason}''', inline=False)
+            await ctx.send(embed=em)
+            await member.ban()
+    else:
+        message = await ctx.send(f'''{ctx.author.mention} you are not eligible for this''', delete_after= 3)
+        await message.add_reaction('\u2623') 
+
+
+
+@bot.command(pass_context=True)
+async def joined_at(ctx, member: discord.Member = None):
+    ":checks joined time of user"
+    if member is None:
+        member = ctx.message.author
+        em = discord.Embed(title='Join', colour=discord.Colour.dark_red(),
+                            description=f'''{member} has  Joinned''', timestamp=datetime.datetime.utcnow())
+        em.set_thumbnail(url=member.avatar_url)
+        em.add_field(name='Member', value=f'''{member} joined at {member.joined_at}''', inline=False)
+        await ctx.send(embed=em)
+    else:
+        if member is discord.Member:
+            member = ctx.message.author
+            em = discord.Embed(title='Join', colour=discord.Colour.dark_red(),
+                                description=f'''{member} has  Joinned''', timestamp=datetime.datetime.utcnow())
+            em.set_thumbnail(url=member.avatar_url)
+            em.add_field(name='Member', value=f'''{member} joined at {member.joined_at}''', inline=False)
+            await ctx.send(embed=em)
+            
+@bot.command(pass_context = True)
+async def say(ctx, *args):
+    ":ecohs you "
+    mesg = ' '.join(args)
+    await ctx.message.delete()
+
+    return await ctx.send(mesg)
+
+@bot.command(pass_context=True)
+async def pepe(ctx, user: discord.Member = None):
+    """pepe!"""
+    user = user or ctx.message.author
+
+    pepe = "**  kissed you.{1}!**"
+
+    choices = ["http://i.imgur.com/vpIyEue.png",
+               "http://i.imgur.com/0koMC0v.jpg",
+               "http://i.imgur.com/9Q6KMZa.png",
+               "http://i.imgur.com/54xy6jr.png",
+               "http://i.imgur.com/QvCngiJ.jpg",
+               "http://i.imgur.com/ftWgrOE.jpg",
+               "http://i.imgur.com/rhDSqRv.jpg",
+               "http://i.imgur.com/89NZ3zM.jpg",
+               "http://i.imgur.com/I4cIH5b.png",
+               "http://i.imgur.com/GIFc4uX.png",
+               "http://i.imgur.com/bgShJpZ.png",
+               "http://i.imgur.com/jpfPLyn.png",
+               "http://i.imgur.com/pZeYoej.png",
+               "http://i.imgur.com/M8V9WKB.jpg",
+               "http://i.imgur.com/ZBzHxNk.jpg",
+               "http://i.imgur.com/xTyJ6xa.png",
+               "http://i.imgur.com/TOozxRQ.png",
+               "http://i.imgur.com/Eli5HdZ.png",
+               "http://i.imgur.com/pkikqcA.jpg",
+               "http://i.imgur.com/gMF8eo5.png",
+               "http://i.imgur.com/HYh8BUm.jpg",
+               "http://i.imgur.com/ZGVrRye.jpg",
+               "http://i.imgur.com/Au4F1px.jpg",
+               "http://i.imgur.com/gh36k9y.jpg",
+               "http://i.imgur.com/MHDoRuN.png",
+               "http://i.imgur.com/V3MJfyK.png",
+               "http://i.imgur.com/QGGTipc.jpg",
+               "http://i.imgur.com/PRFrTgz.png",
+               "http://i.imgur.com/9UBJrwM.jpg",
+               "http://i.imgur.com/WQY9Vhb.jpg",
+               "http://i.imgur.com/sIbQdou.jpg",
+               "http://i.imgur.com/LlUMg00.jpg",
+               "http://i.imgur.com/MmijlWa.png",
+               "http://i.imgur.com/i0CrtrX.png",
+               "http://i.imgur.com/Dfpudwp.jpg",
+               "http://i.imgur.com/hhg0wVF.gif",
+               "http://i.imgur.com/7VDiIHN.jpg",
+               "http://i.imgur.com/nxvXpNV.jpg",
+               "http://i.imgur.com/DZYEjrW.gif",
+               "http://i.imgur.com/mnyQ0Rh.jpg",
+               "http://i.imgur.com/aHawbbs.jpg",
+               "http://i.imgur.com/g8cCHV7.jpg",
+               "http://i.imgur.com/E2cMU7Y.jpg",
+               "http://i.imgur.com/PkmcgGF.jpg",
+               "http://i.imgur.com/7qLQ1xl.jpg",
+               "http://i.imgur.com/7qLQ1xl.jpg",
+               "http://i.imgur.com/arSsPwf.png",
+               "http://i.imgur.com/xcYh4iC.png",
+               "http://i.imgur.com/9692WND.jpg",
+               "http://i.imgur.com/diAK5Nu.jpg",
+               "http://i.imgur.com/zDs0tRW.jpg",
+               "http://i.imgur.com/PEM87nV.jpg",
+               "http://i.imgur.com/zlCzlND.jpg",
+               "http://i.imgur.com/n0OHxDl.jpg",
+               "http://i.imgur.com/TQRf1WH.png",
+               "http://i.imgur.com/zi9ad15.jpg",
+               "http://i.imgur.com/b8A6Qke.jpg",
+               "http://i.imgur.com/YuLapEu.png",
+               "http://i.imgur.com/fWFXkY1.jpg",
+               "http://i.imgur.com/i5vNvWU.png",
+               "http://i.imgur.com/oXwUwtJ.jpg",
+               "http://i.imgur.com/hadm4jV.jpg",
+               "http://i.imgur.com/gbCvkqo.png",
+               "http://i.imgur.com/wDiiWBG.jpg",
+               "http://i.imgur.com/Mvghx4V.jpg",
+               "http://i.imgur.com/SnTAjiJ.jpg",
+               "http://i.imgur.com/QvMYBnu.png",
+               "http://i.imgur.com/WkzPvfB.jpg",
+               "http://i.imgur.com/PfAm4ot.png",
+               "http://i.imgur.com/SIk4a45.png",
+               "http://i.imgur.com/aISFmQq.jpg",
+               "http://i.imgur.com/sMQkToE.png",
+               "http://i.imgur.com/7i3cBrP.png",
+               "http://i.imgur.com/1oMSz6e.png",
+               "http://i.imgur.com/nVCRnRv.png",
+               "http://i.imgur.com/FzWmxmi.jpg",
+               "http://i.imgur.com/rpUI20F.jpg",
+               "http://i.imgur.com/FDmnFDZ.jpg",
+               "http://i.imgur.com/40Z1Yyg.jpg",
+               "http://i.imgur.com/osy5Nu4.png",
+               "http://i.imgur.com/4w81MSS.jpg",
+               "http://i.imgur.com/qRXQFYa.png",
+               "http://i.imgur.com/A1af62j.jpg",
+               "http://i.imgur.com/wOc6fUe.jpg",
+               "http://i.imgur.com/Z6ILiJ4.jpg",
+               "http://i.imgur.com/537UpEJ.jpg",
+               "http://i.imgur.com/HDc6kko.png",
+               "http://i.imgur.com/oyLpuXq.jpg",
+               "http://i.imgur.com/iCmGtJS.jpg",
+               "http://i.imgur.com/MjpnlQm.png",
+               "http://i.imgur.com/c6MWRQ9.jpg"]
+
+
+    image = random.choice(choices)
+
+    embed = discord.Embed(description=f"""{user.name}""", colour=discord.Colour(0xba4b5b))
+    embed.add_field(name=' Random', value=f''' ~~pepe~~''', inline=False)
+    embed.set_image(url=image)
+
+
+    await ctx.send(embed=embed)
+@bot.command(pass_context=True, name='youtube', no_pm=True)
+async def youtube(ctx, *, query: str):
+    """Search on Youtube"""
+    try:
+        url = 'https://www.youtube.com/results?'
+        payload = {'search_query': ''.join(query)}
+        headers = {'user-agent': 'Red-cog/1.0'}
+        conn = aiohttp.TCPConnector()
+        session = aiohttp.ClientSession(connector=conn)
+        async with session.get(url, params=payload, headers=headers) as r:
+            result = await r.text()
+        session.close()
+        yt_find = re.findall(r'href=\"\/watch\?v=(.{11})', result)
+        url = 'https://www.youtube.com/watch?v={}'.format(yt_find[0])
+        await ctx.send (url)
+    except Exception as e:
+        message = 'Something went terribly wrong! [{}]'.format(e)
+        await  ctx.send(message)
+
+@bot.command(pass_context=True, name='wikipedia', aliases=['wiki', 'w'])
+async def wikipedia(ctx, *, query: str):
+    """
+    Get information from Wikipedia
+    """
+    try:
+        url = 'https://en.wikipedia.org/w/api.php?'
+        payload = {}
+        payload['action'] = 'query'
+        payload['format'] = 'json'
+        payload['prop'] = 'extracts'
+        payload['titles'] = ''.join(query).replace(' ', '_')
+        payload['exsentences'] = '5'
+        payload['redirects'] = '1'
+        payload['explaintext'] = '1'
+        headers = {'user-agent': 'Red-cog/1.0'}
+        conn = aiohttp.TCPConnector(verify_ssl=False)
+        session = aiohttp.ClientSession(connector=conn)
+        async with session.get(url, params=payload, headers=headers) as r:
+            result = await r.json()
+        session.close()
+        if '-1' not in result['query']['pages']:
+            for page in result['query']['pages']:
+                title = result['query']['pages'][page]['title']
+                description = result['query']['pages'][page]['extract'].replace('\n', '\n\n')
+            em = discord.Embed(title='Wikipedia: {}'.format(title), description=u'\u2063\n{}...\n\u2063'.format(description[:-3]), color=discord.Color.blue(), url='https://en.wikipedia.org/wiki/{}'.format(title.replace(' ', '_')))
+            em.set_footer(text='Information provided by Wikimedia', icon_url='https://upload.wikimedia.org/wikipedia/commons/thumb/5/53/Wikimedia-logo.png/600px-Wikimedia-logo.png')
+            await ctx.send(embed=em)
+        else:
+            message = 'I\'m sorry, I can\'t find {}'.format(''.join(query))
+            await ctx.send('```{}```'.format(message))
+    except Exception as e:
+        message = 'Something went terribly wrong! [{}]'.format(e)
+        await ctx.send('```{}```'.format(message))
+
+    
+@bot.listen()
+async def on_member_join(member):
+    await member.send(f"{member.name}Welcome to {member.guild.name}")
 
 
 @bot.event
 async def on_command_error(ctx, err):
-    if ctx.guild.id == 409340532675051531:
+    if ctx.guild.id == 509312403436208157:
         await ctx.channel.send(f'''```py\n{type(err).__name__}: {err!s}```''')
     else:
         return
@@ -326,10 +573,8 @@ async def on_message(msg):
 
 @bot.event
 async def on_ready():
-    bot.load_extension("fun")
-    bot.load_extension("search")
     bot.load_extension('ExampleRepl')
-    options = ('help via gc!help', 'to K-RITE` 🎧᳄#8172', f'on {len(bot.guilds)} servers')
+    options = ('help via s!help', 'to K-RITE` 🎧᳄#8172', f'on {len(bot.guilds)} servers')
     while True:
         await bot.change_presence(activity=discord.Streaming(name=random.choice(options), url='https://www.twitch.tv/cohhcarnage'))
         await asyncio.sleep(10)
